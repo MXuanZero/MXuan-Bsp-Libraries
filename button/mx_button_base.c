@@ -34,14 +34,17 @@ void MX_Button_Init(MX_Button *mx_btn, uint8_t _id,
 /**
   * @brief  定时器检测按键
   * @param  mx_btn          指向 MX_UART_DataTypeDef 结构的指针
-  * @param  elapsed_time    定时器中断频率，单位ms
+  * @param  elapsedTime     定时器中断频率，单位ms
   * @retval None
   */
-void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsed_time)
+void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsedTime)
 {
-    mx_btn->timer += elapsed_time;
+    mx_btn->timer += elapsedTime;
 #ifdef DOUBLE_CLICK_BUFFER_TIME
-    mx_btn->doubleCountDown = mx_btn->doubleCountDown > 0 ? mx_btn->doubleCountDown -elapsed_time : 0;
+    if(mx_btn->doubleCountDown)
+    {
+        mx_btn->doubleCountDown = mx_btn->doubleCountDown > 0 ? mx_btn->doubleCountDown -elapsedTime : 0;
+    }
 #endif
     _Bool nowPinIO = MX_Button_ReadPinIO(mx_btn->id);
     if (nowPinIO != mx_btn->lastPinIO)

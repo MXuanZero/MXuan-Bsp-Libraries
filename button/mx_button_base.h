@@ -70,7 +70,7 @@ void MX_Button_Init(MX_Button *mx_btn,
                     void (*_callback)(MX_Button_Event)
 );
 
-void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsed_time);
+void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsedTime);
 __weak _Bool MX_Button_ReadPinIO(uint8_t _id);
 
 #ifdef __cplusplus
