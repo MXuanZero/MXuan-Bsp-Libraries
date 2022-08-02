@@ -17,15 +17,16 @@
   */
 void MX_Button_Init(MX_Button *mx_btn, uint8_t _id,
                     uint32_t longPressTime,
-                    void (*callback)(MX_Button_Event))
+                    void (*callback)(MX_Button_Event),
+                    void (*button_hardware_init)(MX_Button *,uint8_t))
 {
     mx_btn->id = _id;
+    button_hardware_init(mx_btn, _id);
     mx_btn->timer = 0;
     mx_btn->pressTime = 0;
     mx_btn->longPressTime = longPressTime;
     mx_btn->Event_Func = callback;
     mx_btn->lastPinIO = MX_Button_ReadPinIO(_id);
-
 #ifdef DOUBLE_CLICK_BUFFER_TIME
     mx_btn->doubleCountDown = 0;
 #endif
@@ -50,9 +51,9 @@ void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsedTime)
     if (nowPinIO != mx_btn->lastPinIO)
     {
         mx_btn->lastPinIO = nowPinIO;
-        if (nowPinIO)
+        if (nowPinIO) //按下
         {
-            //按下
+
             mx_btn->pressTime = mx_btn->timer;
 #ifdef DOUBLE_CLICK_BUFFER_TIME
             //第二次按下执行任务
@@ -66,9 +67,8 @@ void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsedTime)
 #endif
             mx_btn->Event_Func(DOWN);
         }
-        else
+        else //抬起
         {
-            //抬起
             mx_btn->Event_Func(UP);
             if (mx_btn->timer - mx_btn->pressTime > mx_btn->longPressTime && mx_btn->longPressTime != 0)
                 mx_btn->Event_Func(LONG_PRESS);
@@ -81,12 +81,12 @@ void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsedTime)
 }
 
 /**
-  * @brief  按键检测函数
-  * @note   默认为 STM32 的按键检测，若使用其他 MCU 需重写此函数。
+  * @brief  按键检测函数模板，STM32-HAL库
   * @param  _id     按键id
   * @retval None
   */
-__weak _Bool MX_Button_ReadPinIO(uint8_t _id)
+#if 0
+_Bool MX_Button_ReadPinIO(uint8_t _id)
 {
     switch (_id)
     {
@@ -98,36 +98,38 @@ __weak _Bool MX_Button_ReadPinIO(uint8_t _id)
             return 0;
     }
 }
-
+#endif
 
 /**
   * @brief  按键任务处理函数模板
   * @param  _event  事件
   * @retval None
   */
-//void ButtonX_Event(MX_Button_Event _event)
-//{
-//    switch (_event)
-//    {
-//        case UP:
-//        {
-//            break;
-//        }
-//        case DOWN:
-//        {
-//            break;
-//        }
-//        case CLICK:
-//        {
-//            break;
-//        }
-//        case LONG_PRESS:
-//        {
-//            break;
-//        }
-//        case DOUBLE_CLICK:
-//        {
-//            break;
-//        }
-//    }
-//}
+#if 0
+void ButtonX_Event(MX_Button_Event _event)
+{
+    switch (_event)
+    {
+        case UP:
+        {
+            break;
+        }
+        case DOWN:
+        {
+            break;
+        }
+        case CLICK:
+        {
+            break;
+        }
+        case LONG_PRESS:
+        {
+            break;
+        }
+        case DOUBLE_CLICK:
+        {
+            break;
+        }
+    }
+}
+#endif

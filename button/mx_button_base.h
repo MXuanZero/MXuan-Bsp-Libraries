@@ -10,9 +10,10 @@
     例：
     1.初始化
         MX_Button button1 = {0};
-        MX_Button_Init(&button1, 1, 1000, Button1_Event);
+        MX_Button_Init(&button1, 1, 1000, Button1_Event, MX_Button_Hardware_Init);
+        MX_Button_Hardware_Init 硬件初始化函数
     2.按键检测
-        默认为 STM32 的按键检测，若使用其他 MCU 需重写此函数。
+        需重写此函数，mx_button_base.c 的最后有按键按键检测函数模板。
         _Bool MX_Button_ReadPinIO(uint8_t _id)
     3.定时器
         将该函数放入定时器中即可，10为定时中断频率，单位ms。
@@ -35,7 +36,13 @@
 extern "C" {
 #endif
 
-#include "main.h"
+#include <stdint.h>
+
+//按键ID
+#define BUTTON  0
+
+//END
+
 
 // 双击并未完善，请勿使用。取消 DOUBLE_CLICK_BUFFER_TIME 的注释开启双击检测。
 // CLICK 为松手事件，尽量不要与 DOUBLE_CLICK 同时使用。
@@ -67,11 +74,12 @@ typedef struct
 void MX_Button_Init(MX_Button *mx_btn,
                     uint8_t _id,
                     uint32_t longPressTime,
-                    void (*_callback)(MX_Button_Event)
+                    void (*_callback)(MX_Button_Event),
+                    void (*button_hardware_init)(MX_Button *,uint8_t)
 );
-
+void MX_Button_Hardware_Init(MX_Button *mx_btn,uint8_t _id);
 void MX_Button_Tick(MX_Button *mx_btn, uint32_t elapsedTime);
-__weak _Bool MX_Button_ReadPinIO(uint8_t _id);
+_Bool MX_Button_ReadPinIO(uint8_t _id);
 
 #ifdef __cplusplus
 }

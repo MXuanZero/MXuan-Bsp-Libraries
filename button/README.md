@@ -5,15 +5,16 @@
 ```c
 MX_Button button1 = {0};
 MX_Button_Init(&button1, 1, 1000, Button1_Event);
+MX_Button_Hardware_Init 硬件初始化函数
 ```
 
 ### 按键检测
 
 ```c
-__weak _Bool MX_Button_ReadPinIO(uint8_t _id)
+_Bool MX_Button_ReadPinIO(uint8_t _id)
 ```
 
-==默认为 STM32 的按键检测，若使用其他 MCU 需重写此函数==
+==需根据模板重写此函数==
 
 ### 定时器
 
