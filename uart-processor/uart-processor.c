@@ -15,12 +15,12 @@ static void MX_UART_RxData_Clear(MX_UART_DataTypeDef *uart_data);
 /* Public Function */
 MX_UART_STATE MX_UART_Processor_Init(MX_UART_HandleTypeDef *uart_handle,
                                      void(*startFunc)(void),
-                                     void (*setRxFlag)(MX_UART_FIFOTypeDef *),
+                                     void (*setNewRcvFlag)(MX_UART_FIFOTypeDef *),
                                      _Bool (*checkErrors)(void),
                                      void (*protocol)(MX_UART_DataTypeDef *))
 {
     uart_handle->checkErrors = checkErrors;
-    uart_handle->setRxFlag = setRxFlag;
+    uart_handle->setNewRcvFlag = setNewRcvFlag;
     uart_handle->protocol = protocol;
     startFunc();
     return MX_UART_OK;
@@ -29,7 +29,7 @@ MX_UART_STATE MX_UART_Processor_Init(MX_UART_HandleTypeDef *uart_handle,
 void MX_UART_Running(MX_UART_HandleTypeDef *mx_uart_handle)
 {
     mx_uart_handle->checkErrors();  // 检查是否出现错误
-    mx_uart_handle->setRxFlag(&mx_uart_handle->uart_fifo);
+    mx_uart_handle->setNewRcvFlag(&mx_uart_handle->uart_fifo);
     /* 赋值的原因是让代码变简洁一些 */
     const uint8_t *const newRcvFlag = &mx_uart_handle->uart_fifo.newRcvFlag;
     uint8_t *const lastRcvFlag = &mx_uart_handle->uart_fifo.lastRcvFlag;

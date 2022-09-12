@@ -78,14 +78,14 @@ typedef struct
     MX_UART_FIFOTypeDef uart_fifo;                  //环形接收队列
 
     _Bool (*checkErrors)(void);                     //检查错误
-    void (*setRxFlag)(MX_UART_FIFOTypeDef *);       //设置标志位
+    void (*setNewRcvFlag)(MX_UART_FIFOTypeDef *);   //前指针更新
     void (*protocol)(MX_UART_DataTypeDef *);        //任务函数
 } MX_UART_HandleTypeDef;
 
 /* Public function */
 MX_UART_STATE MX_UART_Processor_Init(MX_UART_HandleTypeDef *uart_handle,
                                      void(*startFunc)(void),
-                                     void (*setRxFlag)(MX_UART_FIFOTypeDef *),
+                                     void (*setNewRcvFlag)(MX_UART_FIFOTypeDef *),
                                      _Bool (*checkErrors)(void),
                                      void (*protocol)(MX_UART_DataTypeDef *));
 
